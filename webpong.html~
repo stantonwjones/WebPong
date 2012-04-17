@@ -1,0 +1,10 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	</head>
+	<body>
+		<canvas id='webpong_canvas' width='600' height='600'>
+			you're crappy browser does not support canvas
+		</canvas>
+	</body>
+</html>
