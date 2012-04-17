@@ -19,10 +19,13 @@ function WebpongApp() {
 
 		}
 
-		function nextPosition() {
+		function setNextPosition() {
 			this.xpos += this.xvel;
 			this.ypos += this.yvel;
 		}
+        function isTouchingPaddle(paddle) [
+            return (xpos < paddle.rightEdge && xpos > paddle.leftEdge && ypos < paddle.topEdge && ypos > paddle.botEdge)
+        }
 	}
 	
 	// Paddle Object
