@@ -6,6 +6,9 @@ function WebpongApp() {
 
 	// Ball Object
 	function Ball() {
+        // Size of the ball
+        var radius = 15;
+
 		// Position Vector
 		this.xpos;
 		this.ypos;
@@ -26,6 +29,8 @@ function WebpongApp() {
         function isTouchingPaddle(paddle) [
             return (xpos < paddle.rightEdge && xpos > paddle.leftEdge && ypos < paddle.topEdge && ypos > paddle.botEdge)
         }
+        function isTouchingWall() {
+            return (
 	}
 	
 	// Paddle Object
