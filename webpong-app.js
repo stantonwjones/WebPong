@@ -6,6 +6,7 @@ WebpongApp = (function() {
     var PADDLE_OFFSET = 30;
     var FREQUENCY = 30;
     var speed = 1000 / FREQUENCY;
+    var score = [0,0];
 
 	function init() {
         paddle0 = new Paddle(PADDLE_OFFSET);
@@ -36,9 +37,8 @@ WebpongApp = (function() {
         var ypos = parseInt(canvas.height) / 2;
 
 		// Velocity Vector
-		var xvel = 0;
+		var xvel = 2;
 		var yvel = 2;
-
 
 		// function for drawing the ball
         function draw() {
@@ -58,15 +58,30 @@ WebpongApp = (function() {
         function isTouchingPaddle(paddle) {
             var leftLimit = xpos - radius;
             var rightLimit = xpos + radius;
-            
+            var paddleDimensions = paddle.getTopBottomWidthArray();
+            var paddleTop = paddleDimensions[0];
+            var paddleBot = paddleDimensions[1];
+            var horizontalThresh = paddleDimensions[2] / 2;
+
+            if (ypos < paddleBot && ypos > paddleTop) {
+                if (leftLimit < paddle.xpos + horizontalThresh && leftLimit > paddle.xpos - horizontalThresh) return true;
+                if (rightLimit < paddle.xpos + horizontalThresh && rightLimit > paddle.xpos - horizontalThresh) return true;
+            }
+            return false;
         }
 
         function isMovingTowardsPaddle(paddle) {
-            (xpos - paddle.xpos > 0) && (xvel > 0);
+            return ((paddle.xpos - xpos > 0 && xvel > 0) || (paddle.xpos - xpos < 0 && xvel < 0));
         }
 
         function paddleCheck() {
-
+            var i = 0;
+            while (paddles[i]) {
+                if (isMovingTowardsPaddle(paddles[i]) && isTouchingPaddle(paddles[i])) {
+                    paddleBounce();
+                }
+                i++;
+            }
         }
 
         function isTouchingWall() {
@@ -98,18 +113,25 @@ WebpongApp = (function() {
                         if (yvel > 0) wallBounce();
                         break;
                     case 'left':
-                        // give the left player a point and reset ball
+                        pointToPlayer(1);
+                        break;
                     case 'right':
-                        // give the right player a point and reset ball
+                        pointToPlayer(0);
                 }
             }
+        }
+        function pointToPlayer(num) {
+            score[num] += 1;
+            reset();
         }
 
         // Run the Ball function
         function run() {
             wallCheck();
+            paddleCheck();
             setNextPosition();
             draw();
+            drawScore();
         }
 
         // Initiate the Ball
@@ -119,6 +141,15 @@ WebpongApp = (function() {
 
         // Reset the Ball
         function reset() {
+            ball = new Ball();
+        }
+        // Draw the score
+        function drawScore() {
+            context.fillStyle = '#000000';
+            context.font = '20px _sans';
+            context.TextBaseline = 'top';
+            context.textAlign = 'center';
+            context.fillText(score[0] + ' | ' + score[1], canvas.width / 2, 15);
         }
 
         return {
@@ -193,19 +224,27 @@ WebpongApp = (function() {
         }
         this.getNextPosition = function() {
             self.setMovement();
-            self.ypos += self.yvel;
+            // check that we have not hit the vertical borders before allowing paddle to move
+            var nextPosition = self.ypos + self.yvel;
+            if (nextPosition > width / 2 && nextPosition < canvas.height - width / 2) {
+                self.ypos = nextPosition;
+            }
         }
 
         this.run = function() {
             self.getNextPosition();
             self.draw();
         }
+        this.getTopBottomWidthArray = function() {
+            return[self.ypos - (width / 2), self.ypos + (width / 2), depth];
+        }
         return {
             xpos: self.xpos,
             ypos: self.ypos,
             width: self.width,
             run: self.run,
-            bindKeys: self.bindMovementKeys
+            bindKeys: self.bindMovementKeys,
+            getTopBottomWidthArray: self.getTopBottomWidthArray
         }
 	}
     return {
