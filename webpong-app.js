@@ -37,7 +37,7 @@ WebpongApp = (function() {
         var ypos = parseInt(canvas.height) / 2;
 
 		// Velocity Vector
-		var xvel = 2;
+		var xvel = 4;
 		var yvel = 2;
 
 		// function for drawing the ball
@@ -215,9 +215,9 @@ WebpongApp = (function() {
         }
         this.setMovement = function() {
             if (self.movement == 'up') {
-                self.yvel = -1;
+                self.yvel = -3;
             } else if (self.movement == 'down') {
-                self.yvel = 1;
+                self.yvel = 3;
             } else {
                 self.yvel = 0;
             }
