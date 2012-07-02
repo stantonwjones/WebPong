@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                ws = new WebSocket("ws://localhost:8080");
+                ws.onmessage = function(event) {
+                    var data = event.data;
+                    document.body.write(data);
+                }
+
+                var increment = 0;
+                window.setInterval(sendIncrement, 1000);
+
+                function writeIncrement() {
+                    ws.send(increment);
+                }
+            });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
